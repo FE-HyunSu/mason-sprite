@@ -1,6 +1,6 @@
 {
   "name": "mason-sprite",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Lightweight sprite sheet animation for React, Vue, and Svelte",
   "author": "mason <fe.hyunsu@gmail.com>",
   "type": "module",

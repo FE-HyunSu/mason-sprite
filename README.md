@@ -3,7 +3,7 @@
 [![npm version](https://img.shields.io/npm/v/mason-sprite.svg)](https://www.npmjs.com/package/mason-sprite)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
-**v0.1.1** — Lightweight sprite sheet animation for **React**, **Vue**, and **Svelte** — one package, subpath imports.
+**v0.1.2** — Lightweight sprite sheet animation for **React**, **Vue**, and **Svelte** — one package, subpath imports.
 
 Drop in a PNG or WebP sprite sheet, set `rows`, `cols`, and `fps` — and you're done. No Lottie, no timeline editor. Just a simple **CSS** or **Canvas** sprite player.
 

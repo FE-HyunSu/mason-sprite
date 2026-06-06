@@ -1,0 +1,36 @@
+# dependencies
+node_modules/
+
+# pnpm local store (not part of project structure)
+.pnpm-store/
+
+# build output
+dist/
+
+# svelte
+.svelte-kit/
+
+# typescript
+*.tsbuildinfo
+
+# os
+.DS_Store
+Thumbs.db
+
+# env
+.env
+.env.*
+
+# logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# editor
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# test / coverage
+coverage/

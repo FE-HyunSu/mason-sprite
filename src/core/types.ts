@@ -1,5 +1,8 @@
 export type RendererMode = 'css' | 'canvas';
 
+/** CSS length (e.g. `128`, `'8rem'`, `'50%'`, `'10vw'`) */
+export type SpriteSize = number | string;
+
 export interface SpriteAnimationOptions {
   /** Sprite sheet image URL (PNG, WebP, etc.) */
   src: string;
@@ -11,10 +14,10 @@ export interface SpriteAnimationOptions {
   fps?: number;
   /** Whether to loop the animation (default: true) */
   loop?: boolean;
-  /** Display width in pixels */
-  width?: number;
-  /** Display height in pixels */
-  height?: number;
+  /** Display width — number (px) or any CSS length (`rem`, `em`, `%`, `vw`, etc.) */
+  width?: SpriteSize;
+  /** Display height — number (px) or any CSS length (`rem`, `em`, `%`, `vw`, etc.) */
+  height?: SpriteSize;
   /** Start playing automatically (default: true) */
   autoPlay?: boolean;
   /** Rendering mode: CSS background-position or Canvas (default: 'css') */

@@ -5,9 +5,11 @@ export type {
   RendererMode,
   SpriteAnimationOptions,
   SpriteAnimationState,
+  SpriteSize,
 } from './types.js';
 export {
   getBackgroundPositionPercent,
   getFramePosition,
   getTotalFrames,
+  toCssLength,
 } from './utils.js';

@@ -1,4 +1,9 @@
-import type { FramePosition } from './types.js';
+import type { FramePosition, SpriteSize } from './types.js';
+
+/** Converts a SpriteSize to a CSS length string. Numbers become `px`; strings pass through. */
+export function toCssLength(size: SpriteSize): string {
+  return typeof size === 'number' ? `${size}px` : size;
+}
 
 export function getTotalFrames(rows: number, cols: number): number {
   return rows * cols;

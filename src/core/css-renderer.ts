@@ -1,4 +1,5 @@
-import { getBackgroundPositionPercent } from './utils.js';
+import type { SpriteSize } from './types.js';
+import { getBackgroundPositionPercent, toCssLength } from './utils.js';
 
 export interface CssRendererTarget {
   style: CSSStyleDeclaration;
@@ -10,8 +11,8 @@ export function applyCssFrame(
   frameIndex: number,
   rows: number,
   cols: number,
-  width: number,
-  height: number,
+  width: SpriteSize,
+  height: SpriteSize,
 ): void {
   const { x, y } = getBackgroundPositionPercent(frameIndex, rows, cols);
 
@@ -19,8 +20,8 @@ export function applyCssFrame(
   target.style.backgroundRepeat = 'no-repeat';
   target.style.backgroundSize = `${cols * 100}% ${rows * 100}%`;
   target.style.backgroundPosition = `${x}% ${y}%`;
-  target.style.width = `${width}px`;
-  target.style.height = `${height}px`;
+  target.style.width = toCssLength(width);
+  target.style.height = toCssLength(height);
   target.style.display = 'inline-block';
 }
 

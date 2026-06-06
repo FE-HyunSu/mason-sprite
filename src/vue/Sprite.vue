@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { SPRITE_ANIMATION_DEFAULTS, SpriteAnimator, type SpriteAnimationOptions } from '../core/index.js';
-import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { SPRITE_ANIMATION_DEFAULTS, SpriteAnimator, toCssLength, type SpriteAnimationOptions } from '../core/index.js';
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 
 const props = withDefaults(
   defineProps<
@@ -10,6 +10,11 @@ const props = withDefaults(
   >(),
   SPRITE_ANIMATION_DEFAULTS,
 );
+
+const sizeStyle = computed(() => ({
+  width: toCssLength(props.width),
+  height: toCssLength(props.height),
+}));
 
 const emit = defineEmits<{
   complete: [];
@@ -76,7 +81,7 @@ defineExpose({
     v-if="renderer === 'canvas'"
     ref="targetRef"
     :class="props.class"
-    :style="{ width: `${width}px`, height: `${height}px` }"
+    :style="sizeStyle"
   />
   <div
     v-else
@@ -84,6 +89,6 @@ defineExpose({
     :class="props.class"
     role="img"
     aria-label="Sprite animation"
-    :style="{ width: `${width}px`, height: `${height}px` }"
+    :style="sizeStyle"
   />
 </template>

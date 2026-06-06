@@ -1,6 +1,6 @@
 {
   "name": "mason-sprite",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Lightweight sprite sheet animation for React, Vue, and Svelte",
   "author": "mason <fe.hyunsu@gmail.com>",
   "type": "module",
@@ -53,7 +53,7 @@
     "type": "git",
     "url": "git+https://github.com/FE-HyunSu/mason-sprite.git"
   },
-  "homepage": "https://github.com/FE-HyunSu/mason-sprite#readme",
+  "homepage": "https://mason-sprite.com",
   "bugs": {
     "url": "https://github.com/FE-HyunSu/mason-sprite/issues"
   },

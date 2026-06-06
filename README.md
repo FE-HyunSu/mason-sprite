@@ -1,8 +1,41 @@
 # mason-sprite
 
-Lightweight sprite sheet animation for **React**, **Vue**, and **Svelte** — one package, subpath imports.
+[![npm version](https://img.shields.io/npm/v/mason-sprite.svg)](https://www.npmjs.com/package/mason-sprite)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+
+**v0.1.1** — Lightweight sprite sheet animation for **React**, **Vue**, and **Svelte** — one package, subpath imports.
 
 Drop in a PNG or WebP sprite sheet, set `rows`, `cols`, and `fps` — and you're done. No Lottie, no timeline editor. Just a simple **CSS** or **Canvas** sprite player.
+
+**Demo & docs:** [mason-sprite.com](https://mason-sprite.com)
+
+## Preview
+
+One sprite sheet, a few props — animation on screen.
+
+<table>
+  <tr>
+    <td align="center" width="50%">
+      <strong>Sprite sheet</strong><br />
+      <code>img-cat-run.webp</code> · 2 rows × 5 cols
+      <br /><br />
+      <img src="./docs/assets/readme/img-cat-run.webp" alt="Cat run sprite sheet — 2 rows, 5 columns" width="420" />
+    </td>
+    <td align="center" width="50%">
+      <strong>Rendered with mason-sprite</strong><br />
+      <code>rows={2}</code> · <code>cols={5}</code> · <code>fps={10}</code>
+      <br /><br />
+      <img src="./docs/assets/readme/img-cat-run.gif" alt="Cat run animation rendered by mason-sprite" width="140" />
+    </td>
+  </tr>
+</table>
+
+```
+img-cat-run.webp  →  rows × cols  →  looping animation
+ (WebP sheet)         (2 × 5)          (CSS or Canvas)
+```
+
+Try it live on **[mason-sprite.com](https://mason-sprite.com)**.
 
 ## Install
 
@@ -26,13 +59,13 @@ Peer dependencies (install only what you use):
 import { SpriteAnimator } from 'mason-sprite';
 
 const animator = new SpriteAnimator({
-  src: '/sprites/hero.png',
+  src: '/sprites/cat-run.webp',
   rows: 2,
   cols: 5,
   fps: 10,
   loop: true,
-  width: 140,
-  height: 140,
+  width: '8rem',
+  height: '8rem',
 });
 
 animator.attach(document.getElementById('sprite')!);
@@ -45,13 +78,13 @@ animator.play();
 import { Sprite } from 'mason-sprite/react';
 
 <Sprite
-  src="/sprites/hero.png"
+  src="/sprites/cat-run.webp"
   rows={2}
   cols={5}
   fps={10}
   loop
-  width={140}
-  height={140}
+  width="8rem"
+  height="8rem"
 />
 ```
 
@@ -64,13 +97,13 @@ import { Sprite } from 'mason-sprite/vue';
 
 <template>
   <Sprite
-    src="/sprites/hero.png"
+    src="/sprites/cat-run.webp"
     :rows="2"
     :cols="5"
     :fps="10"
     :loop="true"
-    :width="140"
-    :height="140"
+    width="8rem"
+    height="8rem"
   />
 </template>
 ```
@@ -83,13 +116,13 @@ import { Sprite } from 'mason-sprite/vue';
 </script>
 
 <Sprite
-  src="/sprites/hero.png"
+  src="/sprites/cat-run.webp"
   rows={2}
   cols={5}
   fps={10}
   loop
-  width={140}
-  height={140}
+  width="8rem"
+  height="8rem"
 />
 ```
 
@@ -106,6 +139,8 @@ import { Sprite } from 'mason-sprite/vue';
 
 - PNG / WebP sprite sheet support
 - CSS or Canvas rendering
+- Responsive sizing — `width` / `height` accept CSS lengths (`rem`, `em`, `%`, `vw`, etc.)
+- Canvas mode uses `ResizeObserver` and `devicePixelRatio` for sharp rendering
 - `play`, `pause`, `stop`, `goToFrame` controls
 - Works with any uniform grid sprite sheet (`rows × cols`)
 

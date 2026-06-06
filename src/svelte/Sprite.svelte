@@ -2,6 +2,7 @@
   import {
     SPRITE_ANIMATION_DEFAULTS,
     SpriteAnimator,
+    toCssLength,
     type SpriteAnimationOptions,
   } from 'mason-sprite';
 
@@ -76,13 +77,13 @@
 </script>
 
 {#if renderer === 'canvas'}
-  <canvas bind:this={target} class={className} style="width: {width}px; height: {height}px;"></canvas>
+  <canvas bind:this={target} class={className} style="width: {toCssLength(width)}; height: {toCssLength(height)};"></canvas>
 {:else}
   <div
     bind:this={target}
     class={className}
     role="img"
     aria-label="Sprite animation"
-    style="width: {width}px; height: {height}px;"
+    style="width: {toCssLength(width)}; height: {toCssLength(height)};"
   ></div>
 {/if}

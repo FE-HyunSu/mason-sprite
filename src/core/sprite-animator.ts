@@ -2,7 +2,7 @@ import { SPRITE_ANIMATION_DEFAULTS } from './constants.js';
 import { drawCanvasFrame } from './canvas-renderer.js';
 import { applyCssFrame, resetCssRenderer } from './css-renderer.js';
 import type { SpriteAnimationOptions, SpriteAnimationState } from './types.js';
-import { getTotalFrames } from './utils.js';
+import { getTotalFrames, toCssLength } from './utils.js';
 
 type StateListener = (state: SpriteAnimationState) => void;
 
@@ -24,6 +24,7 @@ export class SpriteAnimator {
   private target: HTMLElement | HTMLCanvasElement | null = null;
   private listeners = new Set<StateListener>();
   private destroyed = false;
+  private resizeObserver: ResizeObserver | null = null;
 
   constructor(options: SpriteAnimationOptions) {
     this.options = {
@@ -35,6 +36,8 @@ export class SpriteAnimator {
 
   attach(target: HTMLElement | HTMLCanvasElement): void {
     this.target = target;
+    this.applyCanvasDisplaySize();
+    this.setupResizeObserver();
     if (this.isLoaded) {
       this.render();
     }
@@ -95,6 +98,7 @@ export class SpriteAnimator {
   updateOptions(partial: Partial<SpriteAnimationOptions>): void {
     const prevSrc = this.options.src;
     const prevFps = this.options.fps;
+    const prevRenderer = this.options.renderer;
     this.options = { ...this.options, ...partial };
 
     if (partial.src !== undefined && partial.src !== prevSrc) {
@@ -106,11 +110,21 @@ export class SpriteAnimator {
     if (partial.fps !== undefined && partial.fps !== prevFps) {
       this.accumulatedTime = 0;
     }
+
+    if (partial.width !== undefined || partial.height !== undefined) {
+      this.applyCanvasDisplaySize();
+    }
+
+    if (partial.renderer !== undefined && partial.renderer !== prevRenderer) {
+      this.setupResizeObserver();
+    }
   }
 
   destroy(): void {
     this.destroyed = true;
     this.pause();
+    this.resizeObserver?.disconnect();
+    this.resizeObserver = null;
     this.listeners.clear();
     if (this.target && this.options.renderer === 'css') {
       resetCssRenderer(this.target);
@@ -199,7 +213,7 @@ export class SpriteAnimator {
     const { src, rows, cols, width, height, renderer } = this.options;
 
     if (renderer === 'canvas' && this.target instanceof HTMLCanvasElement && this.image) {
-      drawCanvasFrame(this.target, this.image, this.currentFrame, rows, cols, width, height);
+      drawCanvasFrame(this.target, this.image, this.currentFrame, rows, cols);
     } else if (renderer === 'css' && this.target instanceof HTMLElement) {
       applyCssFrame(this.target, src, this.currentFrame, rows, cols, width, height);
     }
@@ -208,5 +222,33 @@ export class SpriteAnimator {
   private notify(): void {
     const state = this.getState();
     this.listeners.forEach((listener) => listener(state));
+  }
+
+  private applyCanvasDisplaySize(): void {
+    if (this.options.renderer !== 'canvas' || !(this.target instanceof HTMLCanvasElement)) {
+      return;
+    }
+    this.target.style.width = toCssLength(this.options.width);
+    this.target.style.height = toCssLength(this.options.height);
+  }
+
+  private setupResizeObserver(): void {
+    this.resizeObserver?.disconnect();
+    this.resizeObserver = null;
+
+    if (
+      this.options.renderer !== 'canvas' ||
+      !(this.target instanceof HTMLCanvasElement) ||
+      typeof ResizeObserver === 'undefined'
+    ) {
+      return;
+    }
+
+    this.resizeObserver = new ResizeObserver(() => {
+      if (this.isLoaded) {
+        this.render();
+      }
+    });
+    this.resizeObserver.observe(this.target);
   }
 }

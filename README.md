@@ -25,7 +25,7 @@ One sprite sheet, a few props — animation on screen.
       <strong>Rendered with mason-sprite</strong><br />
       <code>rows={2}</code> · <code>cols={5}</code> · <code>fps={10}</code>
       <br /><br />
-      <img src="./docs/assets/readme/img-cat-run.gif" alt="Cat run animation rendered by mason-sprite" width="140" />
+      <img src="./docs/assets/readme/img-cat-run-animate.webp" alt="Cat run animation rendered by mason-sprite" width="140" />
     </td>
   </tr>
 </table>

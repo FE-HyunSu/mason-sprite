@@ -3,39 +3,17 @@
 [![npm version](https://img.shields.io/npm/v/mason-sprite.svg)](https://www.npmjs.com/package/mason-sprite)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
-**v0.1.3** — Lightweight sprite sheet animation for **React**, **Vue**, and **Svelte** — one package, subpath imports.
+Lightweight sprite sheet animation for **React**, **Vue**, and **Svelte**.
 
-Drop in a PNG or WebP sprite sheet, set `rows`, `cols`, and `fps` — and you're done. No Lottie, no timeline editor. Just a simple **CSS** or **Canvas** sprite player.
+Drop in a uniform-grid PNG or WebP sheet, set `rows`, `cols`, and `fps` — CSS or Canvas rendering with no timeline editor.
 
-**Demo & docs:** [mason-sprite.com](https://mason-sprite.com)
+**Docs & demo:** [mason-sprite.com](https://mason-sprite.com)
 
 ## Preview
 
-One sprite sheet, a few props — animation on screen.
-
-<table>
-  <tr>
-    <td align="center" width="50%">
-      <strong>Sprite sheet</strong><br />
-      <code>img-cat-run.webp</code> · 2 rows × 5 cols
-      <br /><br />
-      <img src="./docs/assets/readme/img-cat-run.webp" alt="Cat run sprite sheet — 2 rows, 5 columns" width="420" />
-    </td>
-    <td align="center" width="50%">
-      <strong>Rendered with mason-sprite</strong><br />
-      <code>rows={2}</code> · <code>cols={5}</code> · <code>fps={10}</code>
-      <br /><br />
-      <img src="./docs/assets/readme/img-cat-run-animate.webp" alt="Cat run animation rendered by mason-sprite" width="140" />
-    </td>
-  </tr>
-</table>
-
-```
-img-cat-run.webp  →  rows × cols  →  looping animation
- (WebP sheet)         (2 × 5)          (CSS or Canvas)
-```
-
-Try it live on **[mason-sprite.com](https://mason-sprite.com)**.
+| Sprite sheet (2 × 5) | Rendered |
+| :---: | :---: |
+| <img src="https://raw.githubusercontent.com/FE-HyunSu/mason-sprite/main/docs/assets/readme/img-cat-run.webp" alt="Sprite sheet" width="360" /> | <img src="https://raw.githubusercontent.com/FE-HyunSu/mason-sprite/main/docs/assets/readme/img-cat-run-animate.webp" alt="Animation" width="120" /> |
 
 ## Install
 
@@ -43,34 +21,13 @@ Try it live on **[mason-sprite.com](https://mason-sprite.com)**.
 npm install mason-sprite
 ```
 
-Peer dependencies (install only what you use):
-
-| Framework | Peers |
-|-----------|-------|
+| Framework | Peer dependencies |
+| --- | --- |
 | React | `react`, `react-dom` |
 | Vue 3 | `vue` |
 | Svelte | `svelte` |
 
 ## Usage
-
-### Core engine (vanilla JS)
-
-```ts
-import { SpriteAnimator } from 'mason-sprite';
-
-const animator = new SpriteAnimator({
-  src: '/sprites/cat-run.webp',
-  rows: 2,
-  cols: 5,
-  fps: 10,
-  loop: true,
-  width: '8rem',
-  height: '8rem',
-});
-
-animator.attach(document.getElementById('sprite')!);
-animator.play();
-```
 
 ### React
 
@@ -88,7 +45,7 @@ import { Sprite } from 'mason-sprite/react';
 />
 ```
 
-### Vue 3
+### Vue
 
 ```vue
 <script setup>
@@ -101,7 +58,7 @@ import { Sprite } from 'mason-sprite/vue';
     :rows="2"
     :cols="5"
     :fps="10"
-    :loop="true"
+    loop
     width="8rem"
     height="8rem"
   />
@@ -126,43 +83,58 @@ import { Sprite } from 'mason-sprite/vue';
 />
 ```
 
+### Vanilla JS
+
+```ts
+import { SpriteAnimator } from 'mason-sprite';
+
+const animator = new SpriteAnimator({
+  src: '/sprites/cat-run.webp',
+  rows: 2,
+  cols: 5,
+  fps: 10,
+  loop: true,
+  width: '8rem',
+  height: '8rem',
+});
+
+animator.attach(document.getElementById('sprite')!);
+```
+
+## Props
+
+Shared by `<Sprite>` (React / Vue / Svelte) and `SpriteAnimator`.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `src` | `string` | — | Sprite sheet image URL (PNG, WebP, etc.) |
+| `rows` | `number` | — | Number of rows in the sheet |
+| `cols` | `number` | — | Number of columns in the sheet |
+| `fps` | `number` | `12` | Frames per second |
+| `loop` | `boolean` | `true` | Loop the animation |
+| `width` | `number \| string` | `128` | Display width — px number or CSS length (`rem`, `%`, `vw`, …) |
+| `height` | `number \| string` | `128` | Display height — px number or CSS length |
+| `autoPlay` | `boolean` | `true` | Start playing on attach |
+| `renderer` | `'css' \| 'canvas'` | `'css'` | Rendering mode |
+| `onComplete` | `() => void` | — | Called when a non-looping animation finishes |
+| `onFrameChange` | `(frame: number) => void` | — | Called on each frame change |
+
+Framework-specific props:
+
+| Framework | Extra props |
+| --- | --- |
+| React | `className`, `style` |
+| Vue | `class` |
+| Svelte | `class` |
+
 ## Exports
 
 | Import path | Contents |
-|-------------|----------|
+| --- | --- |
 | `mason-sprite` | `SpriteAnimator`, types, utilities |
 | `mason-sprite/react` | `Sprite`, `useSprite` |
-| `mason-sprite/vue` | `Sprite` component |
-| `mason-sprite/svelte` | `Sprite` component |
-
-## Features
-
-- PNG / WebP sprite sheet support
-- CSS or Canvas rendering
-- Responsive sizing — `width` / `height` accept CSS lengths (`rem`, `em`, `%`, `vw`, etc.)
-- Canvas mode uses `ResizeObserver` and `devicePixelRatio` for sharp rendering
-- `play`, `pause`, `stop`, `goToFrame` controls
-- Works with any uniform grid sprite sheet (`rows × cols`)
-
-## Sprite Sheet Requirements
-
-- Uniform grid — every frame is the same size
-- PNG or WebP format
-- `rows × cols` = total frame count
-
-## Development
-
-```bash
-pnpm install
-pnpm build
-pnpm typecheck
-```
-
-## Publish
-
-```bash
-npm publish
-```
+| `mason-sprite/vue` | `Sprite` |
+| `mason-sprite/svelte` | `Sprite` |
 
 ## License
 

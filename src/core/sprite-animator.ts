@@ -1,16 +1,24 @@
 import { SPRITE_ANIMATION_DEFAULTS } from './constants.js';
 import { drawCanvasFrame } from './canvas-renderer.js';
 import { applyCssFrame, resetCssRenderer } from './css-renderer.js';
-import type { SpriteAnimationOptions, SpriteAnimationState } from './types.js';
+import type { SpriteAnimationClip, SpriteAnimationOptions, SpriteAnimationState } from './types.js';
 import { getTotalFrames, toCssLength } from './utils.js';
 
 type StateListener = (state: SpriteAnimationState) => void;
 
+type ResolvedSegment = {
+  start: number;
+  end: number;
+  loop: boolean;
+};
+
 type ResolvedSpriteAnimationOptions = Required<
   Pick<SpriteAnimationOptions, 'src' | 'rows' | 'cols'>
 > &
-  Required<Pick<SpriteAnimationOptions, 'fps' | 'loop' | 'width' | 'height' | 'autoPlay' | 'renderer'>> &
-  Pick<SpriteAnimationOptions, 'onComplete' | 'onFrameChange'>;
+  Required<
+    Pick<SpriteAnimationOptions, 'fps' | 'loop' | 'reverse' | 'width' | 'height' | 'autoPlay' | 'renderer'>
+  > &
+  Pick<SpriteAnimationOptions, 'onComplete' | 'onFrameChange' | 'animations'>;
 
 export class SpriteAnimator {
   private options: ResolvedSpriteAnimationOptions;
@@ -25,6 +33,8 @@ export class SpriteAnimator {
   private listeners = new Set<StateListener>();
   private destroyed = false;
   private resizeObserver: ResizeObserver | null = null;
+  private segment: ResolvedSegment | null = null;
+  private activeAnimation: string | null = null;
 
   constructor(options: SpriteAnimationOptions) {
     this.options = {
@@ -67,7 +77,8 @@ export class SpriteAnimator {
 
   stop(): void {
     this.pause();
-    this.currentFrame = 0;
+    this.currentFrame = this.getSegmentStartFrame();
+    this.clearSegment();
     this.render();
     this.notify();
   }
@@ -80,12 +91,54 @@ export class SpriteAnimator {
     this.notify();
   }
 
+  playSegment(clip: SpriteAnimationClip): void {
+    if (this.destroyed) return;
+    this.segment = this.resolveClip(clip);
+    this.activeAnimation = null;
+    this.currentFrame = this.getSegmentStartFrame();
+    this.render();
+    this.options.onFrameChange?.(this.currentFrame);
+    this.startOrResumePlayback();
+  }
+
+  playAnimation(name: string): void {
+    if (this.destroyed) return;
+    const clip = this.options.animations?.[name];
+    if (!clip) {
+      console.warn(`[SpriteAnimator] Unknown animation: "${name}"`);
+      return;
+    }
+    this.segment = this.resolveClip(clip);
+    this.activeAnimation = name;
+    this.currentFrame = this.getSegmentStartFrame();
+    this.render();
+    this.options.onFrameChange?.(this.currentFrame);
+    this.startOrResumePlayback();
+  }
+
+  private startOrResumePlayback(): void {
+    this.accumulatedTime = 0;
+    this.lastTimestamp = 0;
+    if (this.isPlaying) {
+      this.notify();
+      return;
+    }
+    this.play();
+  }
+
+  clearSegment(): void {
+    this.segment = null;
+    this.activeAnimation = null;
+  }
+
   getState(): SpriteAnimationState {
     return {
       currentFrame: this.currentFrame,
       totalFrames: this.getTotalFrames(),
       isPlaying: this.isPlaying,
       isLoaded: this.isLoaded,
+      segment: this.getPublicSegment(),
+      activeAnimation: this.activeAnimation,
     };
   }
 
@@ -131,10 +184,46 @@ export class SpriteAnimator {
     }
     this.target = null;
     this.image = null;
+    this.clearSegment();
   }
 
   private getTotalFrames(): number {
     return getTotalFrames(this.options.rows, this.options.cols);
+  }
+
+  private resolveClip(clip: SpriteAnimationClip): ResolvedSegment {
+    const total = this.getTotalFrames();
+    const start = Math.max(0, Math.min(clip.start, total - 1));
+    const end = Math.max(start, Math.min(clip.end, total - 1));
+    return {
+      start,
+      end,
+      loop: clip.loop ?? this.options.loop,
+    };
+  }
+
+  private getPlaybackBounds(): ResolvedSegment {
+    if (this.segment) return this.segment;
+    const total = this.getTotalFrames();
+    return {
+      start: 0,
+      end: total - 1,
+      loop: this.options.loop,
+    };
+  }
+
+  private getSegmentStartFrame(): number {
+    if (!this.segment) return 0;
+    return this.options.reverse ? this.segment.end : this.segment.start;
+  }
+
+  private getPublicSegment(): SpriteAnimationClip | null {
+    if (!this.segment) return null;
+    return {
+      start: this.segment.start,
+      end: this.segment.end,
+      loop: this.segment.loop,
+    };
   }
 
   private loadImage(): void {
@@ -187,19 +276,34 @@ export class SpriteAnimator {
   };
 
   private advanceFrame(): void {
-    const total = this.getTotalFrames();
-    const next = this.currentFrame + 1;
+    const { start, end, loop } = this.getPlaybackBounds();
 
-    if (next >= total) {
-      if (this.options.loop) {
-        this.currentFrame = 0;
+    if (this.options.reverse) {
+      const prev = this.currentFrame - 1;
+      if (prev < start) {
+        if (loop) {
+          this.currentFrame = end;
+        } else {
+          this.currentFrame = start;
+          this.pause();
+          this.options.onComplete?.();
+        }
       } else {
-        this.currentFrame = total - 1;
-        this.pause();
-        this.options.onComplete?.();
+        this.currentFrame = prev;
       }
     } else {
-      this.currentFrame = next;
+      const next = this.currentFrame + 1;
+      if (next > end) {
+        if (loop) {
+          this.currentFrame = start;
+        } else {
+          this.currentFrame = end;
+          this.pause();
+          this.options.onComplete?.();
+        }
+      } else {
+        this.currentFrame = next;
+      }
     }
 
     this.render();

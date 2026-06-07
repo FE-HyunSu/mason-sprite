@@ -1,5 +1,6 @@
 import {
   SpriteAnimator,
+  type SpriteAnimationClip,
   type SpriteAnimationOptions,
   type SpriteAnimationState,
 } from '../core/index.js';
@@ -17,6 +18,8 @@ export interface UseSpriteReturn {
   pause: () => void;
   stop: () => void;
   goToFrame: (frame: number) => void;
+  playSegment: (clip: import('../core/types.js').SpriteAnimationClip) => void;
+  playAnimation: (name: string) => void;
 }
 
 export function useSprite(options: UseSpriteOptions): UseSpriteReturn {
@@ -27,6 +30,8 @@ export function useSprite(options: UseSpriteOptions): UseSpriteReturn {
     totalFrames: options.rows * options.cols,
     isPlaying: false,
     isLoaded: false,
+    segment: null,
+    activeAnimation: null,
   });
 
   const { enabled = true, ...animatorOptions } = options;
@@ -60,6 +65,8 @@ export function useSprite(options: UseSpriteOptions): UseSpriteReturn {
     animatorOptions.cols,
     animatorOptions.fps,
     animatorOptions.loop,
+    animatorOptions.reverse,
+    animatorOptions.animations,
     animatorOptions.width,
     animatorOptions.height,
     animatorOptions.autoPlay,
@@ -73,5 +80,7 @@ export function useSprite(options: UseSpriteOptions): UseSpriteReturn {
     pause: () => animatorRef.current?.pause(),
     stop: () => animatorRef.current?.stop(),
     goToFrame: (frame) => animatorRef.current?.goToFrame(frame),
+    playSegment: (clip: SpriteAnimationClip) => animatorRef.current?.playSegment(clip),
+    playAnimation: (name) => animatorRef.current?.playAnimation(name),
   };
 }

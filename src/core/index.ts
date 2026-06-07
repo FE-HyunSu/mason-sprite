@@ -3,6 +3,7 @@ export { SpriteAnimator } from './sprite-animator.js';
 export type {
   FramePosition,
   RendererMode,
+  SpriteAnimationClip,
   SpriteAnimationOptions,
   SpriteAnimationState,
   SpriteSize,

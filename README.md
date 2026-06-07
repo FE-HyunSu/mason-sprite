@@ -9,6 +9,11 @@ Drop in a uniform-grid PNG or WebP sheet, set `rows`, `cols`, and `fps` — CSS 
 
 **Docs & demo:** [mason-sprite.com](https://mason-sprite.com)
 
+## When to use
+
+- **Loop only** → animated WebP `<img>` (simpler, no JS)
+- **play / pause / segments / frame control** → mason-sprite
+
 ## Preview
 
 | Sprite sheet (2 × 5) | Rendered |
@@ -99,7 +104,37 @@ const animator = new SpriteAnimator({
 });
 
 animator.attach(document.getElementById('sprite')!);
+
+// Play a frame range
+animator.playSegment({ start: 0, end: 4 });
+
+// Or use a named clip map
+const walk = new SpriteAnimator({
+  src: '/sprites/hero.webp',
+  rows: 4,
+  cols: 5,
+  animations: {
+    idle: { start: 0, end: 3 },
+    walk: { start: 5, end: 9 },
+  },
+});
+walk.attach(document.getElementById('hero')!);
+walk.playAnimation('walk');
+
+// Reverse playback
+animator.updateOptions({ reverse: true });
 ```
+
+## Controls
+
+| Method | Description |
+| --- | --- |
+| `play()` | Start or resume playback |
+| `pause()` | Pause playback |
+| `stop()` | Pause and reset to the clip start (or frame 0) |
+| `goToFrame(n)` | Jump to a frame index |
+| `playSegment({ start, end, loop? })` | Play a frame range |
+| `playAnimation(name)` | Play a clip from `animations` |
 
 ## Props
 
@@ -112,6 +147,8 @@ Shared by `<Sprite>` (React / Vue / Svelte) and `SpriteAnimator`.
 | `cols` | `number` | — | Number of columns in the sheet |
 | `fps` | `number` | `12` | Frames per second |
 | `loop` | `boolean` | `true` | Loop the animation |
+| `reverse` | `boolean` | `false` | Play frames in reverse |
+| `animations` | `Record<string, SpriteAnimationClip>` | — | Named clips (`{ start, end, loop? }`) |
 | `width` | `number \| string` | `128` | Display width — px number or CSS length (`rem`, `%`, `vw`, …) |
 | `height` | `number \| string` | `128` | Display height — px number or CSS length |
 | `autoPlay` | `boolean` | `true` | Start playing on attach |

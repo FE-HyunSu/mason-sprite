@@ -1,4 +1,4 @@
-import type { SpriteAnimationOptions } from '../core/types.js';
+import type { SpriteAnimationClip, SpriteAnimationOptions } from '../core/types.js';
 import { SPRITE_ANIMATION_DEFAULTS, toCssLength } from '../core/index.js';
 import { forwardRef, useImperativeHandle } from 'react';
 import { useSprite } from './useSprite.js';
@@ -13,23 +13,27 @@ export interface SpriteHandle {
   pause: () => void;
   stop: () => void;
   goToFrame: (frame: number) => void;
+  playSegment: (clip: SpriteAnimationClip) => void;
+  playAnimation: (name: string) => void;
 }
 
 export const Sprite = forwardRef<SpriteHandle, SpriteProps>(function Sprite(
   { className, style, width, height, ...options },
   ref,
 ) {
-  const { ref: targetRef, play, pause, stop, goToFrame } = useSprite({
+  const { ref: targetRef, play, pause, stop, goToFrame, playSegment, playAnimation } = useSprite({
     width,
     height,
     ...options,
   });
 
-  useImperativeHandle(ref, () => ({ play, pause, stop, goToFrame }), [
+  useImperativeHandle(ref, () => ({ play, pause, stop, goToFrame, playSegment, playAnimation }), [
     play,
     pause,
     stop,
     goToFrame,
+    playSegment,
+    playAnimation,
   ]);
 
   const sizeStyle = {

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { SPRITE_ANIMATION_DEFAULTS, SpriteAnimator, toCssLength, type SpriteAnimationOptions } from '../core/index.js';
+import { SPRITE_ANIMATION_DEFAULTS, SpriteAnimator, toCssLength, type SpriteAnimationClip, type SpriteAnimationOptions } from '../core/index.js';
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 
 const props = withDefaults(
@@ -32,6 +32,8 @@ function createAnimator() {
     cols: props.cols,
     fps: props.fps,
     loop: props.loop,
+    reverse: props.reverse,
+    animations: props.animations,
     width: props.width,
     height: props.height,
     autoPlay: props.autoPlay,
@@ -59,6 +61,8 @@ watch(
     props.cols,
     props.fps,
     props.loop,
+    props.reverse,
+    props.animations,
     props.width,
     props.height,
     props.autoPlay,
@@ -72,6 +76,8 @@ defineExpose({
   pause: () => animator?.pause(),
   stop: () => animator?.stop(),
   goToFrame: (frame: number) => animator?.goToFrame(frame),
+  playSegment: (clip: SpriteAnimationClip) => animator?.playSegment(clip),
+  playAnimation: (name: string) => animator?.playAnimation(name),
   getState: () => animator?.getState(),
 });
 </script>

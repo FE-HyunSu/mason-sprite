@@ -16,6 +16,8 @@
     cols,
     fps = SPRITE_ANIMATION_DEFAULTS.fps,
     loop = SPRITE_ANIMATION_DEFAULTS.loop,
+    reverse = SPRITE_ANIMATION_DEFAULTS.reverse,
+    animations,
     width = SPRITE_ANIMATION_DEFAULTS.width,
     height = SPRITE_ANIMATION_DEFAULTS.height,
     autoPlay = SPRITE_ANIMATION_DEFAULTS.autoPlay,
@@ -38,6 +40,8 @@
       cols,
       fps,
       loop,
+      reverse,
+      animations,
       width,
       height,
       autoPlay,
@@ -69,6 +73,14 @@
 
   export function goToFrame(frame: number) {
     animator?.goToFrame(frame);
+  }
+
+  export function playSegment(clip: import('mason-sprite').SpriteAnimationClip) {
+    animator?.playSegment(clip);
+  }
+
+  export function playAnimation(name: string) {
+    animator?.playAnimation(name);
   }
 
   export function getState() {

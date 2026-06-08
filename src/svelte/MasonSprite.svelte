@@ -95,7 +95,7 @@
     bind:this={target}
     class={className}
     role="img"
-    aria-label="Sprite animation"
+    aria-label="Mason sprite animation"
     style="width: {toCssLength(width)}; height: {toCssLength(height)};"
   ></div>
 {/if}

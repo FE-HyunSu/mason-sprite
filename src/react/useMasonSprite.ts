@@ -6,23 +6,23 @@ import {
 } from '../core/index.js';
 import { useEffect, useRef, useState } from 'react';
 
-export interface UseSpriteOptions extends SpriteAnimationOptions {
+export interface UseMasonSpriteOptions extends SpriteAnimationOptions {
   /** Skip auto-attach; useful when controlling the target manually */
   enabled?: boolean;
 }
 
-export interface UseSpriteReturn {
+export interface UseMasonSpriteReturn {
   ref: React.RefObject<HTMLElement | HTMLCanvasElement | null>;
   state: SpriteAnimationState;
   play: () => void;
   pause: () => void;
   stop: () => void;
   goToFrame: (frame: number) => void;
-  playSegment: (clip: import('../core/types.js').SpriteAnimationClip) => void;
+  playSegment: (clip: SpriteAnimationClip) => void;
   playAnimation: (name: string) => void;
 }
 
-export function useSprite(options: UseSpriteOptions): UseSpriteReturn {
+export function useMasonSprite(options: UseMasonSpriteOptions): UseMasonSpriteReturn {
   const ref = useRef<HTMLElement | HTMLCanvasElement | null>(null);
   const animatorRef = useRef<SpriteAnimator | null>(null);
   const [state, setState] = useState<SpriteAnimationState>({
@@ -80,7 +80,7 @@ export function useSprite(options: UseSpriteOptions): UseSpriteReturn {
     pause: () => animatorRef.current?.pause(),
     stop: () => animatorRef.current?.stop(),
     goToFrame: (frame) => animatorRef.current?.goToFrame(frame),
-    playSegment: (clip: SpriteAnimationClip) => animatorRef.current?.playSegment(clip),
+    playSegment: (clip) => animatorRef.current?.playSegment(clip),
     playAnimation: (name) => animatorRef.current?.playAnimation(name),
   };
 }

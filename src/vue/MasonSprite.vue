@@ -94,7 +94,7 @@ defineExpose({
     ref="targetRef"
     :class="props.class"
     role="img"
-    aria-label="Sprite animation"
+    aria-label="Mason sprite animation"
     :style="sizeStyle"
   />
 </template>

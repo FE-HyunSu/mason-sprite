@@ -5,7 +5,7 @@
 
 Lightweight sprite sheet animation for **React**, **Vue**, and **Svelte**.
 
-Drop in a uniform-grid PNG or WebP sheet, set `rows`, `cols`, and `fps` — CSS or Canvas rendering with no timeline editor.
+Drop in a uniform-grid PNG or WebP sheet, set `rows`, `cols`, and `fps` — CSS or Canvas rendering with no timeline editor. Framework components are exported as **`MasonSprite`** to avoid clashing with other `Sprite` components.
 
 **Docs & demo:** [mason-sprite.com](https://mason-sprite.com)
 
@@ -37,9 +37,13 @@ npm install mason-sprite
 ### React
 
 ```tsx
-import { Sprite } from 'mason-sprite/react';
+import { useRef } from 'react';
+import { MasonSprite, type MasonSpriteHandle } from 'mason-sprite/react';
 
-<Sprite
+const ref = useRef<MasonSpriteHandle>(null);
+
+<MasonSprite
+  ref={ref}
   src="/sprites/cat-run.webp"
   rows={2}
   cols={5}
@@ -48,17 +52,19 @@ import { Sprite } from 'mason-sprite/react';
   width="8rem"
   height="8rem"
 />
+
+// ref.current?.playAnimation('walk');
 ```
 
 ### Vue
 
 ```vue
 <script setup>
-import { Sprite } from 'mason-sprite/vue';
+import { MasonSprite } from 'mason-sprite/vue';
 </script>
 
 <template>
-  <Sprite
+  <MasonSprite
     src="/sprites/cat-run.webp"
     :rows="2"
     :cols="5"
@@ -74,10 +80,10 @@ import { Sprite } from 'mason-sprite/vue';
 
 ```svelte
 <script>
-  import { Sprite } from 'mason-sprite/svelte';
+  import { MasonSprite } from 'mason-sprite/svelte';
 </script>
 
-<Sprite
+<MasonSprite
   src="/sprites/cat-run.webp"
   rows={2}
   cols={5}
@@ -127,6 +133,8 @@ animator.updateOptions({ reverse: true });
 
 ## Controls
 
+Available on `SpriteAnimator` and via `ref` / `defineExpose` / Svelte exports on `<MasonSprite>`.
+
 | Method | Description |
 | --- | --- |
 | `play()` | Start or resume playback |
@@ -136,9 +144,11 @@ animator.updateOptions({ reverse: true });
 | `playSegment({ start, end, loop? })` | Play a frame range |
 | `playAnimation(name)` | Play a clip from `animations` |
 
+React hook: `useMasonSprite()` returns the same controls plus `ref` and `state`.
+
 ## Props
 
-Shared by `<Sprite>` (React / Vue / Svelte) and `SpriteAnimator`.
+Shared by `<MasonSprite>` (React / Vue / Svelte) and `SpriteAnimator`.
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
@@ -169,9 +179,17 @@ Framework-specific props:
 | Import path | Contents |
 | --- | --- |
 | `mason-sprite` | `SpriteAnimator`, types, utilities |
-| `mason-sprite/react` | `Sprite`, `useSprite` |
-| `mason-sprite/vue` | `Sprite` |
-| `mason-sprite/svelte` | `Sprite` |
+| `mason-sprite/react` | `MasonSprite`, `useMasonSprite` |
+| `mason-sprite/vue` | `MasonSprite` |
+| `mason-sprite/svelte` | `MasonSprite` |
+
+## Migration
+
+| v0.1.5 | v0.1.6+ |
+| --- | --- |
+| `Sprite` | `MasonSprite` |
+| `useSprite` | `useMasonSprite` |
+| `SpriteProps` / `SpriteHandle` | `MasonSpriteProps` / `MasonSpriteHandle` |
 
 ## License
 

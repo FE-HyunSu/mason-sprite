@@ -1,4 +1,4 @@
-export { Sprite } from './Sprite.js';
-export type { SpriteHandle, SpriteProps } from './Sprite.js';
-export { useSprite } from './useSprite.js';
-export type { UseSpriteOptions, UseSpriteReturn } from './useSprite.js';
+export { MasonSprite } from './MasonSprite.js';
+export type { MasonSpriteHandle, MasonSpriteProps } from './MasonSprite.js';
+export { useMasonSprite } from './useMasonSprite.js';
+export type { UseMasonSpriteOptions, UseMasonSpriteReturn } from './useMasonSprite.js';

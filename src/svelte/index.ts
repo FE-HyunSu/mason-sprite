@@ -1,1 +1,1 @@
-export { default as Sprite } from './Sprite.svelte';
+export { default as MasonSprite } from './MasonSprite.svelte';

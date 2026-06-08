@@ -1,14 +1,14 @@
 import type { SpriteAnimationClip, SpriteAnimationOptions } from '../core/types.js';
 import { SPRITE_ANIMATION_DEFAULTS, toCssLength } from '../core/index.js';
 import { forwardRef, useImperativeHandle } from 'react';
-import { useSprite } from './useSprite.js';
+import { useMasonSprite } from './useMasonSprite.js';
 
-export interface SpriteProps extends SpriteAnimationOptions {
+export interface MasonSpriteProps extends SpriteAnimationOptions {
   className?: string;
   style?: React.CSSProperties;
 }
 
-export interface SpriteHandle {
+export interface MasonSpriteHandle {
   play: () => void;
   pause: () => void;
   stop: () => void;
@@ -17,11 +17,11 @@ export interface SpriteHandle {
   playAnimation: (name: string) => void;
 }
 
-export const Sprite = forwardRef<SpriteHandle, SpriteProps>(function Sprite(
+export const MasonSprite = forwardRef<MasonSpriteHandle, MasonSpriteProps>(function MasonSprite(
   { className, style, width, height, ...options },
   ref,
 ) {
-  const { ref: targetRef, play, pause, stop, goToFrame, playSegment, playAnimation } = useSprite({
+  const { ref: targetRef, play, pause, stop, goToFrame, playSegment, playAnimation } = useMasonSprite({
     width,
     height,
     ...options,
@@ -57,7 +57,7 @@ export const Sprite = forwardRef<SpriteHandle, SpriteProps>(function Sprite(
       className={className}
       style={{ ...sizeStyle, ...style }}
       role="img"
-      aria-label="Sprite animation"
+      aria-label="Mason sprite animation"
     />
   );
 });
